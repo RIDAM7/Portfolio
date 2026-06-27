@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Minimal base only. The full "Engineered Dark" design-token system
+ * (color scale, type scale, radii, shadows, easing) lands in Phase 1.
+ */
+:root {
+  --background: #0a0a0b; /* near-black canvas */
+  --foreground: #ededef;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
