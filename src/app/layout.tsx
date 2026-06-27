@@ -16,8 +16,8 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
 });
 
-// TODO(Phase 1): add the display font (Clash Display vs Satoshi — to be chosen)
-// and expose it as `--font-display`.
+// Display font is Clash Display (Fontshare). It is not on Google Fonts, so it
+// is loaded via the Fontshare CDN <link> below and exposed as --font-display.
 
 export const metadata: Metadata = {
   title: "Ridam Agrawal — Full-Stack Developer | Backend & AI Engineer",
@@ -32,6 +32,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="preconnect"
+          href="https://api.fontshare.com"
+          crossOrigin=""
+        />
+        <link
+          href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap"
+          rel="stylesheet"
+        />
+        <style>{`:root { --font-display: "Clash Display", ${"var(--font-sans)"}, sans-serif; }`}</style>
+      </head>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
