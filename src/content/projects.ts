@@ -40,6 +40,38 @@ export type Project = {
 
 export const PROJECTS: readonly Project[] = [
   {
+    slug: "local-coding-agent",
+    title: "Local Coding Agent",
+    tagline:
+      "A local-first, multi-agent coding agent with repository intelligence and self-healing repair.",
+    problem:
+      "Cloud coding agents are costly and opaque, send your codebase to a third party, and still apply edits with no validation loop.",
+    approach:
+      "Built in Python on Ollama/Qwen models. A retrieval layer (Ripgrep + Tree-sitter) indexes repository symbols, routes, and components for precise context; a 14B planner model decomposes a task into a structured plan, and a 30B/32B coder model emits structured file operations against retrieved context only. A validation layer checks every file op, then runs build/lint/test; a self-healing repair loop classifies failures (build/lint/test), retrieves error-relevant context, generates repair patches, and rolls back if it can't fix within a max-attempts budget. A confidence-gated Claude reviewer arbitrates low-confidence changes under a token budget, with async execution and Markdown run reports.",
+    impact:
+      "An offline-capable engineering agent that plans, edits, validates, and repairs code on its own — escalating to Claude review only when it's unsure.",
+    metrics: [
+      { value: "Local-first", label: "Ollama + Qwen" },
+      { value: "Tree-sitter", label: "+ Ripgrep retrieval" },
+      { value: "Self-healing", label: "repair loop" },
+    ],
+    tech: [
+      "Python",
+      "asyncio",
+      "Pydantic",
+      "Tree-sitter",
+      "Ripgrep",
+      "Ollama",
+      "Qwen",
+      "Claude API",
+    ],
+    role: "Open source · personal project",
+    year: "2026",
+    featured: true,
+    // TODO: open-source repo goes public soon — add `links: { github }` here
+    // (left undefined for now; the ProjectLinks shape already supports it).
+  },
+  {
     slug: "geoai",
     title: "GEOai",
     tagline:

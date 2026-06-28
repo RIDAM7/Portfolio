@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/Container";
-import { MonoLabel } from "@/components/MonoLabel";
+import { SectionEyebrow } from "@/components/SectionEyebrow";
 
 type SectionProps = {
   children: React.ReactNode;
@@ -35,7 +35,7 @@ export function Section({
 
   const header = (label || title) && (
     <header className="mb-10 flex flex-col gap-4 sm:mb-14">
-      {label && <MonoLabel index={index}>{label}</MonoLabel>}
+      {label && <SectionEyebrow index={index} label={label} />}
       {title && (
         <h2
           id={headingId}

@@ -204,23 +204,30 @@ export function ContactForm() {
         </motion.p>
       )}
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="inline-flex items-center justify-center gap-2 rounded-md bg-accent px-5 py-2.5 text-fluid-sm font-medium text-white shadow-glow transition-colors duration-200 hover:bg-accent-bright disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {isSubmitting ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            Sending…
-          </>
-        ) : (
-          <>
-            <Send className="h-4 w-4" aria-hidden />
-            Send message
-          </>
-        )}
-      </button>
+      {/* Primary CTA with a soft violet glow that warms on hover. */}
+      <div className="group relative inline-flex self-start">
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10 rounded-md bg-accent opacity-30 blur-lg transition-opacity duration-300 group-hover:opacity-60"
+        />
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="inline-flex items-center justify-center gap-2 rounded-md bg-accent px-5 py-2.5 text-fluid-sm font-medium text-white shadow-glow transition-colors duration-200 hover:bg-accent-bright disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+              Sending…
+            </>
+          ) : (
+            <>
+              <Send className="h-4 w-4" aria-hidden />
+              Send message
+            </>
+          )}
+        </button>
+      </div>
     </form>
   );
 }

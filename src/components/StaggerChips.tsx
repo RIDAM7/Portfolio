@@ -1,28 +1,31 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { useReducedMotion } from "@/lib/useReducedMotion";
-import { Chip } from "@/components/Chip";
 import { staggerContainer, staggerItem } from "@/lib/motion";
 
 const list = staggerContainer(0.05, 0.05);
 const item = staggerItem(8);
 
+export type StaggerChip = { key: string; node: ReactNode };
+
 /**
- * Renders a group's skills as <Chip> pills that cascade in on scroll (house
- * motion). Under prefers-reduced-motion they render statically with no
- * transforms. Client component — the surrounding group markup stays server-side.
+ * Cascades a group's pre-rendered chips into view on scroll (house motion).
+ * Under prefers-reduced-motion they render statically with no transforms.
+ *
+ * Chips are passed in already-rendered (server-side <TechChip>s) rather than
+ * built here, so the simple-icons brand paths stay in the server tree and never
+ * ship in this client bundle. Client component — surrounding markup stays server.
  */
-export function StaggerChips({ items }: { items: readonly string[] }) {
+export function StaggerChips({ chips }: { chips: readonly StaggerChip[] }) {
   const reduced = useReducedMotion();
 
   if (reduced) {
     return (
       <ul className="mt-4 flex flex-wrap gap-2">
-        {items.map((skill) => (
-          <li key={skill}>
-            <Chip>{skill}</Chip>
-          </li>
+        {chips.map(({ key, node }) => (
+          <li key={key}>{node}</li>
         ))}
       </ul>
     );
@@ -36,9 +39,9 @@ export function StaggerChips({ items }: { items: readonly string[] }) {
       whileInView="show"
       viewport={{ once: true, margin: "-80px" }}
     >
-      {items.map((skill) => (
-        <motion.li key={skill} variants={item}>
-          <Chip>{skill}</Chip>
+      {chips.map(({ key, node }) => (
+        <motion.li key={key} variants={item}>
+          {node}
         </motion.li>
       ))}
     </motion.ul>

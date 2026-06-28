@@ -42,7 +42,7 @@ export function MagneticButton({
   const [pos, setPos] = useState({ x: 0, y: 0 });
 
   const base = cn(
-    "relative inline-flex items-center justify-center gap-2 rounded-md px-5 py-2.5 text-fluid-sm font-medium transition-colors duration-200",
+    "group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-md px-5 py-2.5 text-fluid-sm font-medium transition-colors duration-200",
     variant === "solid"
       ? "bg-accent text-white hover:bg-accent-bright shadow-glow"
       : "border border-strong text-fg hover:border-accent hover:text-fg",
@@ -58,13 +58,24 @@ export function MagneticButton({
       x: (x / rect.width) * strength * 2,
       y: (y / rect.height) * strength * 2,
     });
+    // Move the faint accent glow to the cursor (px within the button box).
+    ref.current.style.setProperty("--gx", `${e.clientX - rect.left}px`);
+    ref.current.style.setProperty("--gy", `${e.clientY - rect.top}px`);
   }
+
+  // Faint accent glow that tracks the cursor (mouse + motion only).
+  const glow = !reduced && (
+    <span
+      aria-hidden
+      className="mb-glow pointer-events-none absolute inset-0 z-0 rounded-[inherit] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+    />
+  );
 
   const reset = () => setPos({ x: 0, y: 0 });
 
   const content = (
     <motion.span
-      className="inline-flex items-center gap-2"
+      className="relative z-10 inline-flex items-center gap-2"
       animate={{ x: pos.x * 0.4, y: pos.y * 0.4 }}
       transition={{ type: "spring", stiffness: 200, damping: 15 }}
     >
@@ -93,6 +104,7 @@ export function MagneticButton({
         className={base}
         {...motionProps}
       >
+        {glow}
         {content}
       </motion.a>
     );
@@ -106,6 +118,7 @@ export function MagneticButton({
       className={base}
       {...motionProps}
     >
+      {glow}
       {content}
     </motion.button>
   );

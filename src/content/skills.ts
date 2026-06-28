@@ -12,7 +12,7 @@ export type SkillGroup = {
 export const SKILLS: readonly SkillGroup[] = [
   {
     title: "Languages",
-    items: ["TypeScript", "JavaScript", "SQL"],
+    items: ["TypeScript", "JavaScript", "Python", "SQL"],
   },
   {
     title: "Backend",
@@ -28,7 +28,14 @@ export const SKILLS: readonly SkillGroup[] = [
   },
   {
     title: "AI / ML",
-    items: ["Generative AI", "LLMs", "Prompt Engineering", "RAG", "AI Agents"],
+    items: [
+      "Generative AI",
+      "LLMs",
+      "Prompt Engineering",
+      "RAG",
+      "AI Agents",
+      "Ollama",
+    ],
   },
   {
     title: "Cloud & Tools",
@@ -39,6 +46,8 @@ export const SKILLS: readonly SkillGroup[] = [
       "Railway",
       "Git",
       "LangSmith",
+      "Tree-sitter",
+      "Ripgrep",
     ],
   },
   {

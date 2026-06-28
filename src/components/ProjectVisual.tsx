@@ -26,12 +26,17 @@ import type { Project } from "@/content/projects";
 export function ProjectVisual({
   project,
   compact = false,
+  featured = false,
 }: {
   project: Project;
   compact?: boolean;
+  /** Wraps the visual in the animated violet -> blue gradient frame. */
+  featured?: boolean;
 }) {
   return (
-    <div className="overflow-hidden rounded-xl border bg-bg-elevated shadow-card">
+    <div className="relative">
+      {featured && <span aria-hidden className="gradient-border-frame" />}
+      <div className="relative overflow-hidden rounded-xl border bg-bg-elevated shadow-card">
       {/* Window chrome — monochrome dots to stay on-palette. */}
       <div className="flex items-center gap-1.5 border-b px-4 py-3">
         <span className="h-2.5 w-2.5 rounded-full bg-bg-overlay" />
@@ -61,6 +66,7 @@ export function ProjectVisual({
             Preview · {project.year}
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -147,6 +147,130 @@
   }
 
   /*
+   * Hero cursor "lens": a brighter copy of the engineering grid clipped to a soft
+   * circle so the grid appears to light up under the pointer. The mask lives on
+   * this outer layer (centered in its box); the Hero translates it to follow the
+   * cursor while counter-translating the inner grid so the lines stay pinned to
+   * the base grid — no doubling, transform-only movement, no per-frame repaint.
+   */
+  .grid-lens {
+    -webkit-mask-image: radial-gradient(
+      26vmax 26vmax at center,
+      #000 0%,
+      transparent 70%
+    );
+    mask-image: radial-gradient(26vmax 26vmax at center, #000 0%, transparent 70%);
+  }
+  .grid-lens__lines {
+    background-image:
+      linear-gradient(var(--border-strong) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border-strong) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  /*
+   * Soft violet -> blue aurora blob that lags behind the cursor in the hero,
+   * dragged through space by a Framer spring (translate3d only). Blurred and
+   * pointer-events:none; the Hero only mounts it for mouse users and fades it in
+   * on first move, so it never appears under reduced motion or on touch.
+   */
+  .aurora-glow {
+    width: 40vmax;
+    height: 40vmax;
+    border-radius: 9999px;
+    background: radial-gradient(
+      circle at center,
+      rgb(var(--accent-rgb) / 0.45),
+      rgb(var(--accent-2-rgb) / 0.16) 45%,
+      transparent 70%
+    );
+    filter: blur(60px);
+  }
+
+  /*
+   * Faint accent glow that tracks the cursor inside a MagneticButton. The button
+   * writes --gx/--gy (px) on mouse move; this radial highlight follows. Fades in
+   * on hover; only mounted for mouse users with motion enabled.
+   */
+  .mb-glow {
+    background: radial-gradient(
+      120px circle at var(--gx, 50%) var(--gy, 50%),
+      rgb(var(--accent-bright-rgb) / 0.5),
+      transparent 60%
+    );
+  }
+
+  /*
+   * Cursor spotlight overlay for project cards. The card writes --spot-x/--spot-y
+   * (px, rAF-throttled) on pointer move and this radial highlight follows the
+   * cursor inside the card. Only rendered for mouse users with motion enabled.
+   */
+  .card-spotlight {
+    background: radial-gradient(
+      240px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+      rgb(var(--accent-rgb) / 0.14),
+      transparent 60%
+    );
+  }
+
+  /*
+   * Animated gradient frame for featured project visuals: a violet -> blue conic
+   * gradient that slowly rotates (transform only) behind the opaque card, so a
+   * thin ~1px ring of it shows around the rounded edge and subtly shifts. The
+   * card sits on top and is opaque, masking everything but the 1px border.
+   */
+  .gradient-border-frame {
+    position: absolute;
+    inset: -1px;
+    border-radius: calc(var(--radius-lg) + 1px);
+    overflow: hidden;
+    z-index: 0;
+  }
+  .gradient-border-frame::before {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    background: conic-gradient(
+      from 0deg,
+      rgb(var(--accent-rgb)),
+      rgb(var(--accent-2-rgb)),
+      rgb(var(--accent-bright-rgb)),
+      rgb(var(--accent-rgb))
+    );
+    animation: gradient-border-spin 8s linear infinite;
+  }
+
+  /*
+   * Infinite brand-logo marquee under the skills grid. The track carries the
+   * icon set twice and scrolls -50% (one full set) on a transform-only loop, so
+   * the wrap is seamless. Edges fade out via a mask; hover pauses it; the
+   * reduced-motion rule below freezes it to a static strip.
+   */
+  .logo-marquee {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 12%,
+      #000 88%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 12%,
+      #000 88%,
+      transparent
+    );
+  }
+  .logo-marquee__track {
+    width: max-content;
+    animation: logo-marquee-scroll 45s linear infinite;
+  }
+  .logo-marquee:hover .logo-marquee__track {
+    animation-play-state: paused;
+  }
+
+  /*
    * Animated text-link underline: an accent bar that grows from the left on
    * hover / keyboard focus. The global reduced-motion rule below zeroes the
    * transition, so it simply appears (a static underline) instead of sweeping.
@@ -255,6 +379,18 @@ html.lenis body {
   background-size: 160px 160px;
 }
 
+@keyframes logo-marquee-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes gradient-border-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes mesh-drift {
   0% {
     background-position:
@@ -281,6 +417,11 @@ html.lenis body {
     scroll-behavior: auto !important;
   }
   .gradient-mesh {
+    animation: none;
+  }
+  /* Freeze the logo marquee to a static strip (the global 0.001ms override would
+     otherwise snap it to its end frame). */
+  .logo-marquee__track {
     animation: none;
   }
   /* No intro under reduced motion — show the page immediately. */

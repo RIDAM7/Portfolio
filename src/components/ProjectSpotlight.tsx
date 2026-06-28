@@ -27,6 +27,7 @@ export function ProjectSpotlight({
 }) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
+  const frame = useRef<number | null>(null);
 
   const rx = useMotionValue(0);
   const ry = useMotionValue(0);
@@ -37,11 +38,22 @@ export function ProjectSpotlight({
 
   function handleMove(e: React.PointerEvent) {
     if (reduced || e.pointerType !== "mouse" || !ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 .. 0.5
-    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    const el = ref.current;
+    const rect = el.getBoundingClientRect();
+    const relX = e.clientX - rect.left;
+    const relY = e.clientY - rect.top;
+    const px = relX / rect.width - 0.5; // -0.5 .. 0.5
+    const py = relY / rect.height - 0.5;
     ry.set(px * MAX_TILT * 2);
     rx.set(-py * MAX_TILT * 2);
+    // rAF-throttle the spotlight CSS var writes so we paint at most once a frame.
+    if (frame.current == null) {
+      frame.current = requestAnimationFrame(() => {
+        frame.current = null;
+        el.style.setProperty("--spot-x", `${relX}px`);
+        el.style.setProperty("--spot-y", `${relY}px`);
+      });
+    }
   }
 
   function reset() {
@@ -61,7 +73,10 @@ export function ProjectSpotlight({
         ref={ref}
         onPointerMove={handleMove}
         onPointerLeave={reset}
-        className={cn("[perspective:1200px]", visualOnLeft && "lg:order-first")}
+        className={cn(
+          "group/visual [perspective:1200px]",
+          visualOnLeft && "lg:order-first",
+        )}
       >
         <motion.div
           style={
@@ -69,9 +84,16 @@ export function ProjectSpotlight({
               ? undefined
               : { rotateX, rotateY, transformStyle: "preserve-3d" }
           }
-          className="rounded-xl transition-shadow duration-300 hover:shadow-glow"
+          className="relative rounded-xl transition-shadow duration-300 hover:shadow-glow"
         >
-          <ProjectVisual project={project} />
+          <ProjectVisual project={project} featured />
+          {/* Cursor spotlight (mouse only; not rendered under reduced motion). */}
+          {!reduced && (
+            <span
+              aria-hidden
+              className="card-spotlight pointer-events-none absolute inset-0 z-10 rounded-xl opacity-0 transition-opacity duration-300 group-hover/visual:opacity-100"
+            />
+          )}
         </motion.div>
       </div>
     </RevealOnScroll>

@@ -13,6 +13,8 @@ import { GradientText } from "@/components/GradientText";
 import { MonoLabel } from "@/components/MonoLabel";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { StaggerChips } from "@/components/StaggerChips";
+import { TechChip } from "@/components/TechChip";
+import { LogoMarquee } from "@/components/LogoMarquee";
 import { SKILLS } from "@/content/skills";
 
 // Per-group icon (presentation only — keeps the data file pure). Keyed by the
@@ -60,11 +62,19 @@ export function Skills() {
                   <MonoLabel>{group.title}</MonoLabel>
                 </h3>
               </RevealOnScroll>
-              <StaggerChips items={group.items} />
+              <StaggerChips
+                chips={group.items.map((skill) => ({
+                  key: skill,
+                  node: <TechChip label={skill} />,
+                }))}
+              />
             </div>
           );
         })}
       </div>
+
+      {/* Decorative brand-logo strip — texture, not content (aria-hidden). */}
+      <LogoMarquee />
     </Section>
   );
 }

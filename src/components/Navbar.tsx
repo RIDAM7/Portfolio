@@ -1,7 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionTemplate,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NAV_LINKS, RESUME_HREF } from "@/lib/nav";
@@ -36,6 +42,16 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Scroll-depth driven backdrop: the bar's tint + blur ramp up over the first
+  // ~500px so it feels more "engineered" the further you scroll. Scroll-linked
+  // (not autonomous motion), so it stays on under reduced motion via the class
+  // fallback below. The rgb() mirrors --bg (#0a0a0b = 10 10 11).
+  const { scrollY } = useScroll();
+  const bgAlpha = useTransform(scrollY, [0, 500], [0, 0.85]);
+  const blurPx = useTransform(scrollY, [0, 500], [0, 14]);
+  const backgroundColor = useMotionTemplate`rgb(10 10 11 / ${bgAlpha})`;
+  const backdropFilter = useMotionTemplate`blur(${blurPx}px)`;
 
   // Track which section is in view to highlight the matching link.
   useEffect(() => {
@@ -76,13 +92,22 @@ export function Navbar() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      <div
+      <motion.div
         className={cn(
-          "transition-colors duration-300",
-          scrolled
-            ? "border-border bg-bg/70 border-b backdrop-blur-md"
-            : "border-b border-transparent bg-transparent",
+          "border-b transition-colors duration-300",
+          scrolled ? "border-border" : "border-transparent",
+          // Reduced-motion fallback: static tint/blur instead of scroll-linked.
+          reduced && scrolled && "bg-bg/80 backdrop-blur-md",
         )}
+        style={
+          reduced
+            ? undefined
+            : {
+                backgroundColor,
+                backdropFilter,
+                WebkitBackdropFilter: backdropFilter,
+              }
+        }
       >
         <Container>
           <nav className="flex h-16 items-center justify-between gap-4">
@@ -153,7 +178,7 @@ export function Navbar() {
             </button>
           </nav>
         </Container>
-      </div>
+      </motion.div>
 
       <MobileMenu
         open={menuOpen}
