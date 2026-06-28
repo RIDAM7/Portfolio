@@ -17,7 +17,9 @@
   /* --- Text --- */
   --fg: #ededef; /* primary text */
   --fg-muted: #a1a1aa; /* secondary text */
-  --fg-subtle: #71717a; /* tertiary / mono labels */
+  /* Tertiary / mono labels. Lightened from #71717a so small mono labels and
+   * eyebrows clear WCAG AA (~4.5:1) on the card surface (--bg-elevated) too. */
+  --fg-subtle: #85858f;
 
   /* --- Borders --- */
   --border: rgba(255, 255, 255, 0.08);
@@ -28,6 +30,20 @@
   --accent-bright: #8b73e8; /* hover / active */
   --accent-2: #4f8cff; /* blue — gradients only, not a 2nd button color */
   --accent-glow: rgba(110, 86, 207, 0.35);
+
+  /* Channel-only versions (space-separated RGB) so Tailwind can compose alpha
+   * utilities like bg-accent/10. The hex vars above stay for raw CSS (focus
+   * ring, ::selection) — keep both in sync if the palette ever changes. */
+  --accent-rgb: 110 86 207;
+  --accent-bright-rgb: 139 115 232;
+  --accent-2-rgb: 79 140 255;
+
+  /* --- Danger: the one functional (non-brand) color, for form errors. A
+   * muted, dark-theme-friendly rose — distinct from the violet accent so the
+   * error signal reads as "wrong", not "interactive". Hex + channel vars mirror
+   * the accent pattern so alpha utilities (border-danger/40) compose. */
+  --danger: #f2557a;
+  --danger-rgb: 242 85 122;
 
   /* Legacy aliases (kept so existing utilities keep working) */
   --background: var(--bg);
@@ -129,6 +145,114 @@
     background-size: 56px 56px;
     mask-image: radial-gradient(60% 60% at 50% 40%, #000, transparent);
   }
+
+  /*
+   * Animated text-link underline: an accent bar that grows from the left on
+   * hover / keyboard focus. The global reduced-motion rule below zeroes the
+   * transition, so it simply appears (a static underline) instead of sweeping.
+   * Reused by the footer, hero, and inline text links.
+   */
+  .link-underline {
+    position: relative;
+  }
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 1px;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: left;
+    background-color: var(--accent);
+    transition: transform 0.3s var(--ease-out-expo);
+  }
+  .link-underline:hover::after,
+  .link-underline:focus-visible::after {
+    transform: scaleX(1);
+  }
+}
+
+/*
+ * Lenis smooth scroll. These classes are added to <html> only while Lenis is
+ * running, so native scroll-behavior stays intact when smooth scroll is off
+ * (e.g. prefers-reduced-motion). Lenis overrides scroll-behavior here so the
+ * CSS `scroll-behavior: smooth` above doesn't fight the JS animation.
+ */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/*
+ * Page-load intro. A brand wordmark holds briefly, then the cover wipes up to
+ * reveal the hero. Rendered server-side so it covers the first paint (no flash,
+ * no layout shift — it is position:fixed). The CSS animation runs on its own
+ * even without JS; the Preloader client component only adds instant skip
+ * (any key / click / scroll) by toggling data-done. Hidden entirely under
+ * prefers-reduced-motion (see the media query below) so the page shows at once.
+ */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  animation: preloader-wipe 0.5s var(--ease-out-expo) 0.45s forwards;
+}
+.preloader__mark {
+  animation: preloader-mark 0.55s var(--ease-out-expo) both;
+}
+/* Skipped early: fade out fast, leaving the running wipe underneath. */
+.preloader[data-done="true"] {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s var(--ease-out-expo);
+}
+@keyframes preloader-wipe {
+  to {
+    transform: translateY(-100%);
+  }
+}
+@keyframes preloader-mark {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/*
+ * Faint film-grain overlay for an "engineered" texture. Pure SVG noise,
+ * pointer-events:none, very low opacity — sits above the scrolling content but
+ * below the fixed chrome (navbar/progress/preloader), so it textures the canvas
+ * without touching readability. Static, so it is reduced-motion safe as-is.
+ */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
 }
 
 @keyframes mesh-drift {
@@ -158,5 +282,9 @@
   }
   .gradient-mesh {
     animation: none;
+  }
+  /* No intro under reduced motion — show the page immediately. */
+  .preloader {
+    display: none;
   }
 }

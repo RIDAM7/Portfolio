@@ -19,7 +19,7 @@ export function MonoLabel({ children, index, className }: MonoLabelProps) {
         className,
       )}
     >
-      {index && <span className="text-accent">{index}</span>}
+      {index && <span className="text-accent-bright">{index}</span>}
       {index && (
         <span aria-hidden className="text-fg-subtle/50">
           /

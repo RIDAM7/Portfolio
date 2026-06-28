@@ -30,11 +30,17 @@ export function Section({
   className,
   contained = true,
 }: SectionProps) {
+  // Give the section an accessible name via its heading when both exist.
+  const headingId = id && title ? `${id}-heading` : undefined;
+
   const header = (label || title) && (
     <header className="mb-10 flex flex-col gap-4 sm:mb-14">
       {label && <MonoLabel index={index}>{label}</MonoLabel>}
       {title && (
-        <h2 className="max-w-3xl font-display text-fluid-3xl font-semibold leading-[1.05] tracking-tight text-fg">
+        <h2
+          id={headingId}
+          className="max-w-3xl font-display text-fluid-3xl font-semibold leading-[1.05] tracking-tight text-fg"
+        >
           {title}
         </h2>
       )}
@@ -51,7 +57,13 @@ export function Section({
   return (
     <section
       id={id}
-      className={cn("scroll-mt-24 py-20 sm:py-28 lg:py-32", className)}
+      aria-labelledby={headingId}
+      // tabIndex lets keyboard focus land here after an anchor jump (a11y).
+      tabIndex={-1}
+      className={cn(
+        "scroll-mt-24 py-20 outline-none sm:py-28 lg:py-32",
+        className,
+      )}
     >
       {contained ? <Container>{body}</Container> : body}
     </section>

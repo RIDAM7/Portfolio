@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useReducedMotion } from "@/lib/useReducedMotion";
+import { EASE, DURATION } from "@/lib/motion";
 
 type RevealOnScrollProps = {
   children: React.ReactNode;
@@ -39,7 +40,7 @@ export function RevealOnScroll({
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay }}
+      transition={{ duration: DURATION.reveal, ease: EASE, delay }}
     >
       {children}
     </MotionTag>

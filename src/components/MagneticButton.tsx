@@ -14,6 +14,12 @@ type MagneticButtonProps = {
   variant?: "solid" | "ghost";
   /** How strongly the button leans toward the cursor (px range). */
   strength?: number;
+  /** Anchor target (link mode only), e.g. "_blank". */
+  target?: React.HTMLAttributeAnchorTarget;
+  /** Anchor rel (link mode only). Defaults to a safe value when target="_blank". */
+  rel?: string;
+  /** Accessible label, e.g. to note a link opens in a new tab. */
+  "aria-label"?: string;
 };
 
 /**
@@ -27,6 +33,9 @@ export function MagneticButton({
   onClick,
   variant = "solid",
   strength = 10,
+  target,
+  rel,
+  "aria-label": ariaLabel,
 }: MagneticButtonProps) {
   const ref = useRef<HTMLAnchorElement & HTMLButtonElement>(null);
   const reduced = useReducedMotion();
@@ -71,8 +80,19 @@ export function MagneticButton({
   };
 
   if (href) {
+    // Default to a safe rel when opening in a new tab.
+    const safeRel =
+      rel ?? (target === "_blank" ? "noopener noreferrer" : undefined);
     return (
-      <motion.a ref={ref} href={href} className={base} {...motionProps}>
+      <motion.a
+        ref={ref}
+        href={href}
+        target={target}
+        rel={safeRel}
+        aria-label={ariaLabel}
+        className={base}
+        {...motionProps}
+      >
         {content}
       </motion.a>
     );
@@ -82,6 +102,7 @@ export function MagneticButton({
     <motion.button
       ref={ref}
       onClick={onClick}
+      aria-label={ariaLabel}
       className={base}
       {...motionProps}
     >

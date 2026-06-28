@@ -18,10 +18,12 @@ const config: Config = {
         fg: "var(--fg)",
         "fg-muted": "var(--fg-muted)",
         "fg-subtle": "var(--fg-subtle)",
-        // Accent
-        accent: "var(--accent)",
-        "accent-bright": "var(--accent-bright)",
-        "accent-2": "var(--accent-2)",
+        // Accent — channel vars so alpha utilities (bg-accent/10) compose.
+        accent: "rgb(var(--accent-rgb) / <alpha-value>)",
+        "accent-bright": "rgb(var(--accent-bright-rgb) / <alpha-value>)",
+        "accent-2": "rgb(var(--accent-2-rgb) / <alpha-value>)",
+        // Danger — the one functional (non-brand) color, for form errors.
+        danger: "rgb(var(--danger-rgb) / <alpha-value>)",
         // Legacy aliases
         background: "var(--background)",
         foreground: "var(--foreground)",
