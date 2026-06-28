@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import {
   SmoothScrollProvider,
@@ -31,7 +33,11 @@ const jetbrainsMono = JetBrains_Mono({
 // ./fonts; the weights match the Fontshare set we previously used (500/600/700).
 const clashDisplay = localFont({
   src: [
-    { path: "./fonts/ClashDisplay-Medium.woff2", weight: "500", style: "normal" },
+    {
+      path: "./fonts/ClashDisplay-Medium.woff2",
+      weight: "500",
+      style: "normal",
+    },
     {
       path: "./fonts/ClashDisplay-Semibold.woff2",
       weight: "600",
@@ -130,6 +136,11 @@ export default function RootLayout({
           <Footer />
           <BackToTop />
         </SmoothScrollProvider>
+        {/* Vercel Analytics + Web Vitals. Script-injected after load, so they
+            stay out of the critical path. Enable Analytics in the Vercel
+            dashboard for data to flow. */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

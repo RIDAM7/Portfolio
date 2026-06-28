@@ -19,8 +19,8 @@ export function Preloader() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const dismiss = () => setDone(true);
-    // Auto-clear shortly after the CSS wipe completes (~0.95s), as a backstop.
-    const timer = window.setTimeout(dismiss, 1100);
+    // Auto-clear shortly after the CSS wipe completes (~0.45s), as a backstop.
+    const timer = window.setTimeout(dismiss, 550);
     const opts = { passive: true } as const;
     window.addEventListener("keydown", dismiss, opts);
     window.addEventListener("pointerdown", dismiss, opts);

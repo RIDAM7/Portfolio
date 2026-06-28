@@ -211,10 +211,10 @@ html.lenis body {
   display: grid;
   place-items: center;
   background: var(--bg);
-  animation: preloader-wipe 0.5s var(--ease-out-expo) 0.45s forwards;
+  animation: preloader-wipe 0.35s var(--ease-out-expo) 0.1s forwards;
 }
 .preloader__mark {
-  animation: preloader-mark 0.55s var(--ease-out-expo) both;
+  animation: preloader-mark 0.3s var(--ease-out-expo) both;
 }
 /* Skipped early: fade out fast, leaving the running wipe underneath. */
 .preloader[data-done="true"] {

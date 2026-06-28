@@ -33,7 +33,10 @@ export function staggerContainer(
 }
 
 /** Child of a staggerContainer: fade + small lift. */
-export function staggerItem(y = 12, duration: number = DURATION.base): Variants {
+export function staggerItem(
+  y = 12,
+  duration: number = DURATION.base,
+): Variants {
   return {
     hidden: { opacity: 0, y },
     show: { opacity: 1, y: 0, transition: { duration, ease: EASE } },

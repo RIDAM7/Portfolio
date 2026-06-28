@@ -133,9 +133,9 @@ export function Navbar() {
                 variant="ghost"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Resume (opens in a new tab)"
+                aria-label="Résumé (opens in a new tab)"
               >
-                Resume
+                Résumé
               </MagneticButton>
             </div>
 
@@ -183,7 +183,7 @@ function MobileMenu({
   function trapTab(e: React.KeyboardEvent) {
     if (e.key !== "Tab") return;
     const focusables = dialogRef.current?.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled])',
+      "a[href], button:not([disabled])",
     );
     if (!focusables || focusables.length === 0) return;
     const first = focusables[0];
@@ -269,7 +269,7 @@ function MobileMenu({
               rel="noopener noreferrer"
               className="inline-flex w-full items-center justify-center rounded-md border border-strong px-5 py-3 text-fluid-sm font-medium text-fg"
             >
-              Resume
+              Résumé
               <span className="sr-only"> (opens in a new tab)</span>
             </a>
           </div>

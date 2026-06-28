@@ -56,6 +56,10 @@ export function About() {
             shipping polished Next.js interfaces. I like owning features end to
             end, from the first schema to the last pixel.
           </p>
+          {/* Education — kept as a subtle mono footnote; it's context, not the focus. */}
+          <p className="font-mono text-fluid-xs uppercase tracking-[0.15em] text-fg-subtle">
+            Education — BBA · IIPS, DAVV, Indore · 2023–2026
+          </p>
         </RevealOnScroll>
 
         {/* Stat counters */}

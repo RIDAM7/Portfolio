@@ -18,13 +18,32 @@ import { RESUME_HREF } from "@/lib/nav";
 
 // Per-element entrance: each item fades + rises, delayed by its order index so
 // the reveal reads name -> role -> value -> CTAs -> badge even though the badge
-// sits at the top of the layout.
+// sits at the top of the layout. Used for the badge + CTAs.
 const item: Variants = {
   hidden: { opacity: 0, y: 16 },
   show: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: DURATION.reveal, ease: EASE, delay: 0.1 + i * 0.09 },
+    transition: {
+      duration: DURATION.reveal,
+      ease: EASE,
+      delay: 0.1 + i * 0.09,
+    },
+  }),
+};
+
+// Transform-only entrance for the hero text (name / role / value prop). Opacity
+// stays 1 the whole time so this text — the LCP node — paints on the very first
+// frame and just slides into place, instead of fading up from invisible.
+const textItem: Variants = {
+  hidden: { y: 12 },
+  show: (i: number) => ({
+    y: 0,
+    transition: {
+      duration: DURATION.reveal,
+      ease: EASE,
+      delay: 0.1 + i * 0.09,
+    },
   }),
 };
 
@@ -57,6 +76,9 @@ export function Hero() {
 
   // When reduced, motion.* elements with no variants just render statically.
   const reveal = (i: number) => (reduced ? {} : { variants: item, custom: i });
+  // Transform-only variant for the LCP text (visible from first paint).
+  const revealText = (i: number) =>
+    reduced ? {} : { variants: textItem, custom: i };
 
   return (
     <section
@@ -94,7 +116,7 @@ export function Hero() {
 
         {/* Name — the centerpiece */}
         <motion.h1
-          {...reveal(0)}
+          {...revealText(0)}
           id="hero-heading"
           className="font-display text-fluid-display font-bold leading-[1.02] tracking-tight"
         >
@@ -103,7 +125,7 @@ export function Hero() {
 
         {/* Role */}
         <motion.p
-          {...reveal(1)}
+          {...revealText(1)}
           className="mt-5 text-fluid-lg font-medium text-fg-muted sm:text-fluid-xl"
         >
           Full-Stack Developer{" "}
@@ -115,7 +137,7 @@ export function Hero() {
 
         {/* Value prop */}
         <motion.p
-          {...reveal(2)}
+          {...revealText(2)}
           className="mt-6 max-w-2xl text-balance text-fluid-base text-fg-muted"
         >
           I build production SaaS and multi-agent AI systems end to end — from
