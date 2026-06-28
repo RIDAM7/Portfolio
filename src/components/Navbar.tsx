@@ -115,9 +115,9 @@ export function Navbar() {
             <a
               href="#home"
               aria-label="Ridam Agrawal — back to top"
-              className="font-display text-fluid-lg font-bold tracking-tight text-fg"
+              className="font-display text-fluid-base font-medium tracking-tight text-fg"
             >
-              R<span className="text-accent">A</span>
+              Ridam <span className="text-accent">Agrawal</span>
             </a>
 
             {/* Desktop links */}
@@ -245,8 +245,8 @@ function MobileMenu({
           transition={{ duration: 0.35, ease: EASE }}
         >
           <div className="flex h-16 items-center justify-between px-6">
-            <span className="font-display text-fluid-lg font-bold tracking-tight text-fg">
-              R<span className="text-accent">A</span>
+            <span className="font-display text-fluid-base font-medium tracking-tight text-fg">
+              Ridam <span className="text-accent">Agrawal</span>
             </span>
             <button
               type="button"
